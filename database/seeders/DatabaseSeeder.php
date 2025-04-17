@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
                     'name' => 'Admin',
                     'email' => 'admin@admin.com',
                     'password' => Hash::make('12345678'),
-                    'password_confirmation' => Hash::make('12345678'), // Tambahkan kolom ini
+                    'password_confirmation' => Hash::make('12345678'),
                     'is_administrator' => true,
                 ]
             ]);

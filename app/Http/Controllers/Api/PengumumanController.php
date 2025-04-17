@@ -32,7 +32,11 @@ class PengumumanController extends Controller
         $pengumumans = Pengumuman::latest()->paginate(5);
 
         //return collection of posts as a resource
-        return new PengumumanResource(true, 'List Data Pengumuman', $pengumumans);
+        return response()->json([
+            'success' => true,
+            'message' => 'List Data Pengumuman',
+            'data' => $pengumumans
+        ]);
     }
 
     /**
@@ -45,10 +49,10 @@ class PengumumanController extends Controller
     {
         //define validation rules
         $validator = Validator::make($request->all(), [
-            'image'     => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'judul'     => 'required',
-            'tanggal_dibuat'     => 'required',
-            'tampil_hingga'     => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'judul' => 'required',
+            'tanggal_dibuat' => 'required',
+            'tampil_hingga' => 'required',
 
         ]);
 
@@ -63,15 +67,19 @@ class PengumumanController extends Controller
 
         //create post
         $pengumuman = Pengumuman::create([
-            'image'     => $image->hashName(),
-            'judul'     => $request->judul,
-            'tanggal_dibuat'     => $request->tanggal_dibuat,
-            'tampil_hingga'     => $request->tampil_hingga,
-           
+            'image' => $image->hashName(),
+            'judul' => $request->judul,
+            'tanggal_dibuat' => $request->tanggal_dibuat,
+            'tampil_hingga' => $request->tampil_hingga,
+
         ]);
 
         //return response
-        return new PengumumanResource(true, 'Data Pengumuman Berhasil Ditambahkan!', $pengumuman);
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Pengumuman Berhasil Ditambahkan!',
+            'data' => $pengumuman
+        ]);
     }
 
     /**
@@ -86,7 +94,11 @@ class PengumumanController extends Controller
         $pengumuman = Pengumuman::find($id);
 
         //return single post as a resource
-        return new PengumumanResource(true, 'Detail Data Pengumuman!', $pengumuman);
+        return response()->json([
+            'success' => true,
+            'message' => 'Detail Data Pengumuman!',
+            'data' => $pengumuman
+        ]);
     }
 
     /**
@@ -100,10 +112,10 @@ class PengumumanController extends Controller
     {
         //define validation rules
         $validator = Validator::make($request->all(), [
-            'judul'     => 'required',
-            'tanggal_dibuat'     => 'required',
-            'tampil_hingga'     => 'required',
-            
+            'judul' => 'required',
+            'tanggal_dibuat' => 'required',
+            'tampil_hingga' => 'required',
+
         ]);
 
         //check if validation fails
@@ -114,37 +126,35 @@ class PengumumanController extends Controller
         //find post by ID
         $pengumuman = Pengumuman::find($id);
 
-        //check if image is not empty
         if ($request->hasFile('image')) {
 
-            //upload image
             $image = $request->file('image');
             $image->storeAs('public/pengumumans', $image->hashName());
 
-            //delete old image
-            Storage::delete('public/pengumumans/'.basename($pengumuman->image));
+            Storage::delete('public/pengumumans/' . basename($pengumuman->image));
 
-            //update post with new image
             $pengumuman->update([
-                'judul'     => $request->judul,
-                'tanggal_dibuat'     => $request->tanggal_dibuat,
-                'tampil_hingga'     => $request->tampil_hingga,
-                
+                'judul' => $request->judul,
+                'tanggal_dibuat' => $request->tanggal_dibuat,
+                'tampil_hingga' => $request->tampil_hingga,
+
             ]);
 
         } else {
 
-            //update post without image
             $pengumuman->update([
-                'image'     => $image->hashName(),
-                'judul'     => $request->judul,
-                'tanggal_dibuat'     => $request->tanggal_dibuat,
-                'tampil_hingga'     => $request->tampil_hingga,
+                'judul' => $request->judul,
+                'tanggal_dibuat' => $request->tanggal_dibuat,
+                'tampil_hingga' => $request->tampil_hingga,
             ]);
         }
 
         //return response
-        return new PengumumanResource(true, 'Data Pengumuman Berhasil Diubah!', $pengumuman);
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Pengumuman Berhasil Diubah!',
+            'data' => $pengumuman
+        ]);
     }
 
     /**
@@ -160,12 +170,15 @@ class PengumumanController extends Controller
         $pengumuman = Pengumuman::find($id);
 
         //delete image
-        Storage::delete('public/pengumumans/'.basename($pengumuman->image));
+        Storage::delete('public/pengumumans/' . basename($pengumuman->image));
 
         //delete post
         $pengumuman->delete();
 
         //return response
-        return new PengumumanResource(true, 'Data Pengumuman Berhasil Dihapus!', null);
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Pengumuman Berhasil Dihapus!',
+        ]);
     }
 }

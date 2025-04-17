@@ -31,7 +31,7 @@ class Kunjungan extends Model
         );
     }
     
-    public function pengunjung()
+    public function pengunjungs()
     {
         return $this->belongsTo(Pengunjung::class, 'pengunjungs_id');
     }

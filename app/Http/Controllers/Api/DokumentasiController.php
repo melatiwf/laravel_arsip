@@ -32,7 +32,11 @@ class DokumentasiController extends Controller
         $dokumentasis = Dokumentasi::latest()->paginate(5);
 
         //return collection of posts as a resource
-        return new DokumentasiResource(true, 'List Data Dokumentasi', $dokumentasis);
+        return response()->json([
+            'success' => true,
+            'message' => 'List Data Dokumentasi',
+            'data'    => $dokumentasis
+        ]);
     }
 
     /**
@@ -71,7 +75,11 @@ class DokumentasiController extends Controller
         ]);
 
         //return response
-        return new DokumentasiResource(true, 'Data Dokumentasi Berhasil Ditambahkan!', $dokumentasi);
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Dokumentasi Berhasil Ditambahkan!',
+            'data'    => $dokumentasi
+        ]);
     }
 
     /**
@@ -86,7 +94,11 @@ class DokumentasiController extends Controller
         $dokumentasi = Dokumentasi::find($id);
 
         //return single post as a resource
-        return new DokumentasiResource(true, 'Detail Data Dokumentasi!', $dokumentasi);
+        return response()->json([
+            'success' => true,
+            'message' => 'Detail Data Dokumentasi!',
+            'data'    => $dokumentasi
+        ]);
     }
 
     /**
@@ -144,7 +156,11 @@ class DokumentasiController extends Controller
         }
 
         //return response
-        return new DokumentasiResource(true, 'Data Dokumentasi Berhasil Diubah!', $dokumentasi);
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Dokumentasi Berhasil Diubah!',
+            'data'    => $dokumentasi
+        ]);
     }
 
     /**
@@ -166,6 +182,10 @@ class DokumentasiController extends Controller
         $dokumentasi->delete();
 
         //return response
-        return new DokumentasiResource(true, 'Data Dokumentasi Berhasil Dihapus!', null);
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Dokumentasi Berhasil Dihapus!',
+            'data'    => null
+        ]);
     }
 }

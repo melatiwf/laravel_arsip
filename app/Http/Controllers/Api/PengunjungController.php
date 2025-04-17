@@ -25,7 +25,11 @@ class PengunjungController extends Controller
         $pengunjungs = Pengunjung::latest()->paginate(5);
 
         //return collection of posts as a resource
-        return new PengunjungResource(true, 'List Data Pengunjung', $pengunjungs);
+        return response()->json([
+            'success' => true,
+            'message' => 'List Data Pengunjung',
+            'data'    => $pengunjungs
+        ]);
     }
 
     /**
@@ -66,7 +70,11 @@ class PengunjungController extends Controller
          ]);
 
         //return response
-        return new PengunjungResource(true, 'Data Pengunjung Berhasil Ditambahkan!', $pengunjung);
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Pengunjung Berhasil Ditambahkan!',
+            'data'    => $pengunjung
+        ]);
     }
 
     /**
@@ -81,7 +89,11 @@ class PengunjungController extends Controller
         $pengunjung = Pengunjung::find($id);
 
         //return single post as a resource
-        return new PengunjungResource(true, 'Detail Data Pengunjung!', $pengunjung);
+        return response()->json([
+            'success' => true,
+            'message' => 'Detail Data Pengunjung!',
+            'data'    => $pengunjung
+        ]);
     }
 
     /**
@@ -122,7 +134,7 @@ class PengunjungController extends Controller
         //     Storage::delete('public/pengunjungs/'.basename($pengunjung->image));
             
             //update post with new image
-         $pengunjungs->update([
+         $pengunjung->update([
                   'nama'     => $request->nama,
                   'jenis_kelamin'     => $request->jenis_kelamin,
                   'asal_instansi'     => $request->asal_instansi,
@@ -134,7 +146,7 @@ class PengunjungController extends Controller
         {
 
              //update post without image
-             $pengunjungs->update([
+             $pengunjung->update([
                  'nama'     => $request->nama,
                  'jenis_kelamin'     => $request->jenis_kelamin,
                  'asal_instansi'     => $request->asal_instansi,
@@ -145,7 +157,11 @@ class PengunjungController extends Controller
          }
 
         //return response
-        return new PengunjungResource(true, 'Data Pengunjung Berhasil Diubah!', $pengunjung);
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Pengunjung Berhasil Diubah!',
+            'data'    => $pengunjung
+        ]);
     }
 
     /**
@@ -167,6 +183,10 @@ class PengunjungController extends Controller
         $pengunjung->delete();
 
         //return response
-        return new PengunjungResource(true, 'Data Pengunjung Berhasil Dihapus!', null);
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Pengunjung Berhasil Dihapus!',
+            'data'    => null
+        ]);
     }
 }

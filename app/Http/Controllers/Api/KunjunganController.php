@@ -20,13 +20,14 @@ class KunjunganController extends Controller
     public function index()
     {
         //get all posts
-        $kunjungans = Kunjungan::with('pengunjungs')->get();
+        $kunjungans = Kunjungan::with('pengunjungs')->paginate();
 
 
-        $kunjungans = Kunjungan::latest()->paginate(5);
-
-        //return collection of posts as a resource
-        return new KunjunganResource(true, 'List Data Kunjungan', $kunjungans);
+        return response()->json([
+            'success' => true,
+            'message' => 'List Data Kunjungan',
+            'data'    => $kunjungans
+        ]);
     }
 
     /**
@@ -48,7 +49,6 @@ class KunjunganController extends Controller
 
         ]);
 
-        //check if validation fails
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
@@ -69,7 +69,11 @@ class KunjunganController extends Controller
         ]);
 
         //return response
-        return new KunjunganResource(true, 'Data Kunjungan Berhasil Ditambahkan!', $kunjungan);
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Kunjungan Berhasil Ditambahkan!',
+            'data'    => $kunjungan
+        ]);
     }
 
     /**
@@ -84,7 +88,11 @@ class KunjunganController extends Controller
         $kunjungan = Kunjungan::find($id);
         
         //return single post as a resource
-        return new KunjunganResource(true, 'Detail Data Kunjungan!', $kunjungan);
+        return response()->json([
+            'success' => true,
+            'message' => 'Detail Data Kunjungan!',
+            'data'    => $kunjungan
+        ]);
     }
 
     /**
@@ -96,7 +104,6 @@ class KunjunganController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //define validation rules
         $validator = Validator::make($request->all(), [
             'nama_instansi'     => 'required',
             'tanggal'     => 'required',
@@ -112,20 +119,15 @@ class KunjunganController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        //find post by ID
-        $kunjungans = Kunjungan::find($id);
+        $kunjungan = Kunjungan::find($id);
 
-        //check if image is not empty
         if ($request->hasFile('image')) {
 
-            //upload image
             $image = $request->file('image');
             $image->storeAs('public/kunjungans', $image->hashName());
 
-            //delete old image
             Storage::delete('public/kunjungans/'.basename($kunjungan->image));
 
-            //update post with new image
             $kunjungan->update([
                 'image'     => $image->hashName(),
                 'nama_instansi'     => $request->nama_instansi,
@@ -138,7 +140,6 @@ class KunjunganController extends Controller
 
         } else {
 
-            //update post without image
             $kunjungan->update([
                 'nama_instansi'     => $request->nama_instansi,
                 'tanggal'     => $request->tanggal,
@@ -149,7 +150,11 @@ class KunjunganController extends Controller
         }
 
         //return response
-        return new KunjunganResource(true, 'Data Kunjungan Berhasil Diubah!', $kunjungan);
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Kunjungan Berhasil Diubah!',
+            'data'    => $kunjungan
+        ]);
     }
 
     /**
@@ -161,16 +166,15 @@ class KunjunganController extends Controller
     public function destroy($id)
     {
 
-        //find post by ID
         $kunjungan = Kunjungan::find($id);
 
-        //delete image
         Storage::delete('public/kunjungans/'.basename($kunjungan->image));
 
-        //delete post
         $kunjungan->delete();
 
-        //return response
-        return new KunjunganResource(true, 'Data Kunjungan Berhasil Dihapus!', null);
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Kunjungan Berhasil Dihapus!',
+        ]);
     }
 }
