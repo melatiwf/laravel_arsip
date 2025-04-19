@@ -23,7 +23,7 @@ Route::apiResource('/pengunjungs', App\Http\Controllers\Api\PengunjungController
 Route::apiResource('/dokumentasis', App\Http\Controllers\Api\DokumentasiController::class);
 Route::apiResource('/pengumumans', App\Http\Controllers\Api\PengumumanController::class);
 Route::apiResource('/kunjungans', App\Http\Controllers\Api\KunjunganController::class);
-
+Route::apiResource('/users', App\Http\Controllers\Api\UserController::class);
 
 
 

@@ -110,7 +110,6 @@ class DokumentasiController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //define validation rules
         $validator = Validator::make($request->all(), [
             'judul'     => 'required',
             'deskripsi'     => 'required',
@@ -118,25 +117,19 @@ class DokumentasiController extends Controller
             
         ]);
 
-        //check if validation fails
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
-        //find post by ID
         $dokumentasi = Dokumentasi::find($id);
 
-        //check if image is not empty
         if ($request->hasFile('image')) {
 
-            //upload image
             $image = $request->file('image');
             $image->storeAs('public/dokumentasis', $image->hashName());
 
-            //delete old image
             Storage::delete('public/dokumentasis/'.basename($dokumentasi->image));
 
-            //update post with new image
             $dokumentasi->update([
                 'image'     => $image->hashName(),
                 'judul'     => $request->judul,
@@ -147,7 +140,6 @@ class DokumentasiController extends Controller
 
         } else {
 
-            //update post without image
             $dokumentasi->update([
                 'judul'     => $request->judul,
                 'deskripsi'     => $request->deskripsi,
@@ -155,7 +147,6 @@ class DokumentasiController extends Controller
             ]);
         }
 
-        //return response
         return response()->json([
             'success' => true,
             'message' => 'Data Dokumentasi Berhasil Diubah!',
