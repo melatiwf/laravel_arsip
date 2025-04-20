@@ -134,6 +134,7 @@ class PengumumanController extends Controller
             Storage::delete('public/pengumumans/' . basename($pengumuman->image));
 
             $pengumuman->update([
+                'image' => $image->hashName(),
                 'judul' => $request->judul,
                 'tanggal_dibuat' => $request->tanggal_dibuat,
                 'tampil_hingga' => $request->tampil_hingga,

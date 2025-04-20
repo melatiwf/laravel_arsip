@@ -24,7 +24,11 @@ class UserController extends Controller
     {
         $users = User::latest()->paginate(5);
 
-        return new UserResource(true, 'List Data User ', $users);
+        return response()->json([
+            'success' => true,
+            'message' => 'List Data User',
+            'data' => $users
+        ]);
     }
     /**
      * store
@@ -34,36 +38,34 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required',
             'password' => 'required',
             'password_confirmation' => 'required|same:password'
         ]);
-        if ($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
-            'success' => false,
-            'message' => 'ADA KESALAHAN',
-            'data' => $validator->erros()
+                'success' => false,
+                'message' => 'ADA KESALAHAN',
+                'data' => $validator->erros()
             ]);
-         }
+        }
 
-         $input = $request->all();
-         $input['password'] = bcrypt($input['password']);
-         $user = User::create($input);
- 
-         $success['token'] = $user->createToken('auth_token')->plainTextToken;
-         $success['name'] = $user->name;
- 
-         return response()->json([
-             'success' => true,
-             'message' => 'Sukses register',
-             'data' => $success
-         ]);
-        //return response
-        return new UserResource(true, 'Data User Berhasil Ditambahkan!', $user);
+        $input = $request->all();
+        $input['password'] = bcrypt($input['password']);
+        $user = User::create($input);
+
+        $success['token'] = $user->createToken('auth_token')->plainTextToken;
+        $success['name'] = $user->name;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Sukses register',
+            'data' => $success
+        ]);
     }
-  /**
+    /**
      * show
      *
      * @param  mixed 
@@ -73,9 +75,21 @@ class UserController extends Controller
     {
         $user = User::find($id);
 
-        return new UserResource(true, 'Detail Data User!', $user);
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found',
+                'data' => null
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Detail Data User!',
+            'data' => $user
+        ]);
     }
-  /**
+    /**
      * update
      *
      * @param  mixed $request
@@ -91,30 +105,31 @@ class UserController extends Controller
             'password' => 'required',
             'password_confirmation' => 'required|same:password'
         ]);
-    
+
         // Check if validation fails
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
-    
-        // Find the category by ID
+
         $user = User::find($id);
+
         if (!$user) {
             return response()->json(['message' => 'Kategori tidak ditemukan'], 404);
         }
-    
-        // Update the category
+
         $user->update([
             'name' => $request->name,
-            'email'=> $request->email,
-            'password'=> $request->password,
-            'password_confirmation'=> $request->password_confirmation
+            'email' => $request->email,
+            'password' => bcrypt($request->password)
         ]);
-    
-        // Return response
-        return new UserResource(true, 'Data User Berhasil Diubah!', $user);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data User Berhasil Diubah!',
+            'data' => $user
+        ]);
     }
-        public function destroy($id)
+    public function destroy($id)
     {
 
         //find post by ID
@@ -126,6 +141,10 @@ class UserController extends Controller
         $user->delete();
 
         //return response
-        return new UserResource(true, 'Data User Berhasil Dihapus!', null);
+        return response()->json([
+            'success' => true,
+            'message' => 'Data User Berhasil Dihapus!',
+            'data' => null
+        ]);
     }
 }
